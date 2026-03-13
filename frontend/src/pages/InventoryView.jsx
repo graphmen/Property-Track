@@ -94,18 +94,18 @@ const InventoryView = ({ type }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
         <div>
-          <h1 className="text-2xl font-bold mb-1">{config.title}</h1>
+          <h1 className="text-2xl font-bold mb-1 tracking-tight">{config.title}</h1>
           <p className="text-text-muted italic text-sm">Bespoke asset register for GMB property class: {type}</p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <label className="text-sm font-semibold text-text-muted">Filter by Station:</label>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Station Filtering:</label>
           <select 
             value={selectedDepot}
             onChange={(e) => setSelectedDepot(e.target.value)}
-            className="px-4 py-2 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[200px]"
+            className="px-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[200px] shadow-sm font-medium"
           >
             <option value="">All Regions / Stations</option>
             {depots.map(depot => (

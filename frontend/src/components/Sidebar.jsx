@@ -27,7 +27,7 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
   </div>
 );
 
-const Sidebar = ({ activePage, setActivePage }) => {
+const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'land', label: 'Land', icon: MapPin },
@@ -37,8 +37,23 @@ const Sidebar = ({ activePage, setActivePage }) => {
     { id: 'reports', label: 'Analytics', icon: PieChart },
   ];
 
+  const handleNavClick = (id) => {
+    setActivePage(id);
+    if (closeSidebar) closeSidebar();
+  };
+
   return (
-    <div className="w-[var(--sidebar-width)] h-screen bg-white border-r border-[var(--border)] p-6 flex flex-col fixed left-0 top-0 z-50">
+    <div className="w-[var(--sidebar-width)] h-screen bg-white border-r border-[var(--border)] p-6 flex flex-col relative">
+      {/* Mobile Close Button */}
+      {isMobile && (
+        <button 
+          onClick={closeSidebar}
+          className="lg:hidden absolute right-4 top-4 p-2 text-text-muted hover:text-primary transition-colors"
+        >
+          <LogOut size={20} className="rotate-180" />
+        </button>
+      )}
+
       <div className="flex items-center gap-3 mb-10 px-2">
         <img src={logo} alt="Property Track" className="h-10 w-auto" />
       </div>
@@ -51,7 +66,7 @@ const Sidebar = ({ activePage, setActivePage }) => {
             icon={item.icon}
             label={item.label}
             active={activePage === item.id}
-            onClick={() => setActivePage(item.id)}
+            onClick={() => handleNavClick(item.id)}
           />
         ))}
       </nav>
