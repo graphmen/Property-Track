@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Bell, Search, User } from 'lucide-react';
+import { Bell, Search, User, Menu } from 'lucide-react';
 
 const Layout = ({ children, activePage, setActivePage }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -27,18 +27,14 @@ const Layout = ({ children, activePage, setActivePage }) => {
       <main className="flex-1 lg:ml-0 p-4 md:p-10 transition-all duration-300">
         <header className="flex items-center justify-between mb-6 md:mb-10 gap-4">
           <div className="flex items-center gap-4 flex-1">
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle - High Visibility */}
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden p-3 text-primary hover:text-primary-dark transition-all bg-white rounded-lg border-2 border-primary shadow-md active:scale-95 flex items-center justify-center"
+              className="lg:hidden p-2 bg-primary text-white rounded-lg shadow-lg hover:bg-primary-dark transition-all active:scale-90 flex items-center justify-center border-2 border-primary-dark"
               aria-label="Open Menu"
               style={{ minWidth: '48px', minHeight: '48px' }}
             >
-              <div className="w-6 h-5 flex flex-col justify-between">
-                <span className="w-full h-1 bg-current rounded-full"></span>
-                <span className="w-full h-1 bg-current rounded-full"></span>
-                <span className="w-full h-1 bg-current rounded-full"></span>
-              </div>
+              <Menu size={24} strokeWidth={2.5} />
             </button>
 
             <div className="flex-1 max-w-xl relative">
@@ -65,8 +61,9 @@ const Layout = ({ children, activePage, setActivePage }) => {
               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
                 <User size={18} className="text-gray-500" />
               </div>
-              <div className="hidden fixed bottom-4 right-4 text-[8px] text-text-muted opacity-30 select-none">
-                Build: v1.0.4-RED-TOGGLE
+              {/* Build tracking - will be visible during dev/testing */}
+              <div className="fixed bottom-2 right-2 text-[8px] text-text-muted opacity-20 pointer-events-none">
+                Build: v1.0.5-SOLID-RED
               </div>
             </div>
           </div>
