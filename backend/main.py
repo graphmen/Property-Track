@@ -20,6 +20,18 @@ app.add_middleware(
 async def root():
     return {"message": "GMB Property Track API is online"}
 
+@app.get("/api/health/static")
+async def health_static():
+    static_path = os.path.join(os.path.dirname(__file__), "static")
+    exists = os.path.exists(static_path)
+    files = os.listdir(static_path) if exists else []
+    return {
+        "static_dir_exists": exists,
+        "static_dir_path": static_path,
+        "files_found": len(files),
+        "example_files": files[:5]
+    }
+
 @app.get("/api/inventory/{table}")
 async def get_inventory(table: str, depot_id: Optional[str] = Query(None)):
     from .sync import get_supabase_client
@@ -93,8 +105,16 @@ if os.path.exists(static_path):
 
     # Add SPA fallback for React Router
     @app.exception_handler(404)
-    async def custom_404_handler(request, __):
-        return StaticFiles(directory=static_path, html=True).get_response("index.html", {"type": "http", "scope": {}})
+    async def custom_404_handler(request, exc):
+        # If the request starts with /api, we should probably return a standard 404 JSON
+        if request.url.path.startswith("/api"):
+            return {"status": "error", "message": "Not Found"}
+        
+        # Otherwise, serving index.html for React Router
+        index_file = os.path.join(static_path, "index.html")
+        if os.path.exists(index_file):
+            return StaticFiles(directory=static_path, html=True).get_response("index.html", {"type": "http", "scope": {}})
+        return {"status": "error", "message": "Component file missing"}
 
 if __name__ == "__main__":
     import uvicorn

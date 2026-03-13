@@ -24,7 +24,8 @@ COPY backend /app/backend
 COPY regmbassets /app/regmbassets
 
 # Copy frontend build from Stage 1 to a specific static folder
-COPY --from=frontend-builder /app/frontend/dist /app/backend/static
+RUN mkdir -p /app/backend/static
+COPY --from=frontend-builder /app/frontend/dist /app/backend/static/
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
