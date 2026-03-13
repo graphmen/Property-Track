@@ -63,7 +63,13 @@ const InventoryView = ({ type }) => {
     const fetchDepots = async () => {
       try {
         const response = await axios.get(`${API_URL}/depots`);
-        setDepots(response.data);
+        // Defensive check for depots array
+        if (Array.isArray(response.data)) {
+          setDepots(response.data);
+        } else {
+          console.error("API Error: Depots response is not an array", response.data);
+          setDepots([]);
+        }
       } catch (error) {
         console.error("Error fetching depots:", error);
       }

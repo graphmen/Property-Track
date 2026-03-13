@@ -13,7 +13,12 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       const response = await axios.get(`${API_URL}/stats`);
-      setStats(response.data);
+      if (response.data && response.data.status !== "error") {
+        setStats(response.data);
+      } else {
+        console.error("Dashboard Stats Error:", response.data);
+        setStats({ land: 0, buildings: 0, vehicles: 0, machinery: 0 });
+      }
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {
