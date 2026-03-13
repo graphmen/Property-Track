@@ -83,7 +83,14 @@ const InventoryView = ({ type }) => {
       try {
         const url = `${API_URL}/inventory/${config.table}${selectedDepot ? `?depot_id=${selectedDepot}` : ''}`;
         const response = await axios.get(url);
-        const formattedData = response.data.map(item => ({
+        
+        // Final Hardening: ensure response.data is an array before mapping
+        const rawData = Array.isArray(response.data) ? response.data : [];
+        if (!Array.isArray(response.data)) {
+          console.error("Critical API Error: Expected array, got:", response.data);
+        }
+
+        const formattedData = rawData.map(item => ({
           ...item,
           depot_name: item.depots?.name || 'Unknown',
           fair_value: item.fair_value?.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) || '$0.00'

@@ -97,7 +97,9 @@ const Dashboard = () => {
         <div className="space-y-4 md:space-y-6">
           <div className="glass-card p-6 premium-gradient shadow-xl">
             <h3 className="font-bold mb-2">System Health</h3>
-            <p className="text-[13px] opacity-90 mb-4">All {Object.values(stats || {}).reduce((a, b) => a + b, 0)} assets successfully mapped and validated.</p>
+            <p className="text-[13px] opacity-90 mb-4">
+              All {Object.values(stats || { l: 0, b: 0, v: 0, m: 0 }).reduce((a, b) => (typeof b === 'number' ? a + b : a), 0)} assets successfully mapped and validated.
+            </p>
             <div className="w-full bg-white/20 h-2 rounded-full mb-4">
                 <div className="bg-white h-full rounded-full transition-all duration-1000" style={{width: '100%'}}></div>
             </div>
@@ -112,7 +114,11 @@ const Dashboard = () => {
             <div className="space-y-3">
               <div className="p-3 bg-red-50 border-l-2 border-primary rounded-r-lg">
                 <p className="text-[10px] font-bold text-primary uppercase mb-1">Integration Status</p>
-                <p className="text-xs leading-relaxed font-medium">System initialized. Found {stats.land} land records across the national regional structure.</p>
+                <p className="text-xs leading-relaxed font-medium">
+                  {stats?.land !== undefined 
+                    ? `System active. Found ${stats.land} land records across the national structure.`
+                    : "System awaiting valid database connection..."}
+                </p>
               </div>
             </div>
           </div>
