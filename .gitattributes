@@ -1,0 +1,6 @@
+# Force requirements files to use LF (Unix) line endings to avoid Vercel parsing errors
+requirements.txt text eol=lf
+backend/requirements.txt text eol=lf
+api/requirements.txt text eol=lf
+.vercelignore text eol=lf
+vercel.json text eol=lf
