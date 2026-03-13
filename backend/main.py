@@ -110,14 +110,19 @@ async def trigger_gsheets_sync():
 # Mount static files (will be present in Docker)
 static_path = os.path.join(os.path.dirname(__file__), "static")
 
-# Add SPA fallback for React Router (must be ABOVE the mount to catch 404s properly)
+# Add SPA fallback for React Router
 @app.exception_handler(404)
 async def custom_404_handler(request, exc):
+    path = request.url.path
     # API 404s
-    if request.url.path.startswith("/api"):
+    if path.startswith("/api"):
         return JSONResponse(status_code=404, content={"status": "error", "message": "API endpoint not found"})
     
-    # Frontend SPA fallback
+    # Do NOT serve index.html for missing assets (prevents MIME type errors)
+    if path.startswith("/assets") or any(path.endswith(ext) for ext in [".js", ".css", ".png", ".jpg", ".svg", ".json"]):
+        return JSONResponse(status_code=404, content={"status": "error", "message": f"Asset not found: {path}"})
+
+    # Frontend SPA fallback (only for clean URLs)
     index_file = os.path.join(static_path, "index.html")
     if os.path.exists(index_file):
         return FileResponse(index_file)
