@@ -30,13 +30,13 @@ const Layout = ({ children, activePage, setActivePage }) => {
             {/* Mobile Menu Toggle */}
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden p-2 text-text-muted hover:text-primary transition-colors bg-white rounded-lg border border-[var(--border)] shadow-sm"
+              className="lg:hidden p-3 text-primary hover:text-primary-dark transition-all bg-white rounded-lg border-2 border-primary shadow-md active:scale-95"
+              aria-label="Open Menu"
             >
-              <Search size={20} className="hidden" /> {/* Placeholder for logic alignment if needed */}
-              <div className="w-5 h-4 flex flex-col justify-between">
-                <span className="w-full h-0.5 bg-current rounded-full"></span>
-                <span className="w-full h-0.5 bg-current rounded-full"></span>
-                <span className="w-full h-0.5 bg-current rounded-full"></span>
+              <div className="w-6 h-5 flex flex-col justify-between">
+                <span className="w-full h-1 bg-current rounded-full"></span>
+                <span className="w-full h-1 bg-current rounded-full"></span>
+                <span className="w-full h-1 bg-current rounded-full"></span>
               </div>
             </button>
 
