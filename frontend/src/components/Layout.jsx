@@ -30,8 +30,9 @@ const Layout = ({ children, activePage, setActivePage }) => {
             {/* Mobile Menu Toggle */}
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden p-3 text-primary hover:text-primary-dark transition-all bg-white rounded-lg border-2 border-primary shadow-md active:scale-95"
+              className="lg:hidden p-3 text-primary hover:text-primary-dark transition-all bg-white rounded-lg border-2 border-primary shadow-md active:scale-95 flex items-center justify-center"
               aria-label="Open Menu"
+              style={{ minWidth: '48px', minHeight: '48px' }}
             >
               <div className="w-6 h-5 flex flex-col justify-between">
                 <span className="w-full h-1 bg-current rounded-full"></span>
@@ -63,6 +64,9 @@ const Layout = ({ children, activePage, setActivePage }) => {
               </div>
               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
                 <User size={18} className="text-gray-500" />
+              </div>
+              <div className="hidden fixed bottom-4 right-4 text-[8px] text-text-muted opacity-30 select-none">
+                Build: v1.0.4-RED-TOGGLE
               </div>
             </div>
           </div>
