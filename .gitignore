@@ -1,0 +1,20 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/.env
+backend/credentials.json
+*.py[cod]
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Local Data & Assets
+regmbassets/*.xlsx
+sync_log.txt
+*.log
+
+# System
+.DS_Store
+Thumbs.db
