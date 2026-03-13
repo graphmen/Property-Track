@@ -6,10 +6,18 @@ import pandas as pd
 import re
 
 def get_gsheet_service():
-    creds = service_account.Credentials.from_service_account_file(
-        settings.GOOGLE_SERVICE_ACCOUNT_FILE, 
-        scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
-    )
+    if settings.GOOGLE_SERVICE_ACCOUNT_JSON:
+        import json
+        info = json.loads(settings.GOOGLE_SERVICE_ACCOUNT_JSON)
+        creds = service_account.Credentials.from_service_account_info(
+            info, 
+            scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+        )
+    else:
+        creds = service_account.Credentials.from_service_account_file(
+            settings.GOOGLE_SERVICE_ACCOUNT_FILE, 
+            scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+        )
     return build('sheets', 'v4', credentials=creds)
 
 def fetch_sheet_data(sheet_name: str, range_name: str = "A:Z"):

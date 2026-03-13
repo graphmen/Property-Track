@@ -45,6 +45,8 @@ def sync_depots(excel_path: str):
                     print(f"Error syncing depot {depot_name}: {e}")
 
 if __name__ == "__main__":
-    depot_excel = r"C:\Users\ndebelem\Desktop\2026\Property Track\regmbassets\DEPOTS.xlsx"
+    # Use relative path for portability
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    depot_excel = os.path.join(base_dir, "regmbassets", "DEPOTS.xlsx")
     if os.path.exists(depot_excel):
         sync_depots(depot_excel)
