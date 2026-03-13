@@ -16,11 +16,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return {"message": "GMB Property Track API is online"}
 
-@app.get("/inventory/{table}")
+@app.get("/api/inventory/{table}")
 async def get_inventory(table: str, depot_id: Optional[str] = Query(None)):
     from .sync import get_supabase_client
     supabase = get_supabase_client()
@@ -37,7 +37,7 @@ async def get_inventory(table: str, depot_id: Optional[str] = Query(None)):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-@app.get("/depots")
+@app.get("/api/depots")
 async def get_depots():
     from .sync import get_supabase_client
     supabase = get_supabase_client()
@@ -48,7 +48,7 @@ async def get_depots():
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-@app.get("/stats")
+@app.get("/api/stats")
 async def get_dashboard_stats():
     from .sync import get_supabase_client
     supabase = get_supabase_client()
@@ -67,7 +67,7 @@ async def get_dashboard_stats():
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-@app.post("/sync/depots")
+@app.post("/api/sync/depots")
 async def trigger_depot_sync():
     # Use relative path for cloud portability
     base_dir = os.path.dirname(os.path.dirname(__file__))
@@ -77,7 +77,7 @@ async def trigger_depot_sync():
         return {"status": "success", "message": "Depots synced from local file"}
     return {"status": "error", "message": "DEPOTS.xlsx not found"}
 
-@app.post("/sync/google-sheets")
+@app.post("/api/sync/google-sheets")
 async def trigger_gsheets_sync():
     from .gsheets import sync_all_assets
     try:
