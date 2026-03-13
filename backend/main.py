@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, Query
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles # Added StaticFiles import
 from .sync import sync_depots
 import os
 
@@ -84,6 +85,16 @@ async def trigger_gsheets_sync():
         return {"status": "success", "results": results}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# Mount static files (will be present in Docker)
+static_path = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_path):
+    app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
+
+    # Add SPA fallback for React Router
+    @app.exception_handler(404)
+    async def custom_404_handler(request, __):
+        return StaticFiles(directory=static_path, html=True).get_response("index.html", {"type": "http", "scope": {}})
 
 if __name__ == "__main__":
     import uvicorn
