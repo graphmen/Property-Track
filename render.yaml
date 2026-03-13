@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: property-track-api
+    runtime: python
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        sync: false
+      - key: GOOGLE_SERVICE_ACCOUNT_JSON
+        sync: false
+
+  - type: web
+    name: property-track-frontend
+    runtime: node
+    buildCommand: "cd frontend && npm install && npm run build"
+    startCommand: "cd frontend && npm run preview -- --port $PORT --host 0.0.0.0"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: property-track-api
+          type: web
+          property: host

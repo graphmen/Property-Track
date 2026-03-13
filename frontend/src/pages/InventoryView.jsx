@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import DataTable from '../components/DataTable';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 const InventoryView = ({ type }) => {
   const [data, setData] = useState([]);
   const [depots, setDepots] = useState([]);
@@ -60,7 +62,7 @@ const InventoryView = ({ type }) => {
   useEffect(() => {
     const fetchDepots = async () => {
       try {
-        const response = await axios.get('/api/depots');
+        const response = await axios.get(`${API_URL}/depots`);
         setDepots(response.data);
       } catch (error) {
         console.error("Error fetching depots:", error);
@@ -73,7 +75,7 @@ const InventoryView = ({ type }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const url = `/api/inventory/${config.table}${selectedDepot ? `?depot_id=${selectedDepot}` : ''}`;
+        const url = `${API_URL}/inventory/${config.table}${selectedDepot ? `?depot_id=${selectedDepot}` : ''}`;
         const response = await axios.get(url);
         const formattedData = response.data.map(item => ({
           ...item,

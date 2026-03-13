@@ -3,6 +3,8 @@ import StatsCard from '../components/StatsCard';
 import { Building2, Truck, HardHat, LandPlot, AlertCircle, RefreshCw, PieChart } from 'lucide-react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || '/api';
+
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,7 +12,7 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/stats');
+      const response = await axios.get(`${API_URL}/stats`);
       setStats(response.data);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -26,7 +28,7 @@ const Dashboard = () => {
   const handleSync = async () => {
     setSyncing(true);
     try {
-      await axios.post('/api/sync/google-sheets');
+      await axios.post(`${API_URL}/sync/google-sheets`);
       await fetchStats();
     } catch (error) {
       console.error("Refresh failed:", error);
