@@ -26,17 +26,19 @@ async def health_static():
     static_path = os.path.join(os.path.dirname(__file__), "static")
     exists = os.path.exists(static_path)
     files = []
+    assets_files = []
     if exists:
         files = os.listdir(static_path)
-    
-    # Using a safer slice for linter
-    example_files = files[:min(len(files), 5)]
+        assets_path = os.path.join(static_path, "assets")
+        if os.path.exists(assets_path):
+            assets_files = os.listdir(assets_path)
     
     return {
         "static_dir_exists": exists,
-        "static_dir_path": static_path,
-        "files_found": len(files),
-        "example_files": example_files
+        "root_files": files,
+        "assets_folder_exists": os.path.exists(os.path.join(static_path, "assets")),
+        "assets_files_found": len(assets_files),
+        "example_assets": assets_files[:5]
     }
 
 @app.get("/api/inventory/{table}")
