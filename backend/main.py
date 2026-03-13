@@ -68,7 +68,9 @@ async def get_dashboard_stats():
 
 @app.post("/sync/depots")
 async def trigger_depot_sync():
-    depot_excel = r"C:\Users\ndebelem\Desktop\2026\Property Track\regmbassets\DEPOTS.xlsx"
+    # Use relative path for cloud portability
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    depot_excel = os.path.join(base_dir, "regmbassets", "DEPOTS.xlsx")
     if os.path.exists(depot_excel):
         sync_depots(depot_excel)
         return {"status": "success", "message": "Depots synced from local file"}

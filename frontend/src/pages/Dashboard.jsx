@@ -10,7 +10,7 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/stats');
+      const response = await axios.get('/api/stats');
       setStats(response.data);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -26,7 +26,7 @@ const Dashboard = () => {
   const handleSync = async () => {
     setSyncing(true);
     try {
-      await axios.post('http://localhost:8000/sync/google-sheets');
+      await axios.post('/api/sync/google-sheets');
       await fetchStats();
     } catch (error) {
       console.error("Refresh failed:", error);

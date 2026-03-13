@@ -60,7 +60,7 @@ const InventoryView = ({ type }) => {
   useEffect(() => {
     const fetchDepots = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/depots');
+        const response = await axios.get('/api/depots');
         setDepots(response.data);
       } catch (error) {
         console.error("Error fetching depots:", error);
@@ -73,7 +73,7 @@ const InventoryView = ({ type }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const url = `http://localhost:8000/inventory/${config.table}${selectedDepot ? `?depot_id=${selectedDepot}` : ''}`;
+        const url = `/api/inventory/${config.table}${selectedDepot ? `?depot_id=${selectedDepot}` : ''}`;
         const response = await axios.get(url);
         const formattedData = response.data.map(item => ({
           ...item,
