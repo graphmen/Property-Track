@@ -1,0 +1,16 @@
+.git
+.venv
+venv
+pycache
+__pycache__
+backend/venv
+frontend/node_modules
+sync_log.txt
+START_SYSTEM.bat
+backend/run_backend.bat
+frontend/run_frontend.bat
+regmbassets/*.xlsx
+!regmbassets/DEPOTS.xlsx
+backend/credentials.json
+frontend/dist
+dist
