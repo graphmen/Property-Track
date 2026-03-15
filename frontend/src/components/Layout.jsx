@@ -1,6 +1,7 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import { Bell, Search, User, Menu } from 'lucide-react';
+import gmbLogo from '../assets/gmb.png';
 
 const Layout = ({ children, activePage, setActivePage }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -54,16 +55,13 @@ const Layout = ({ children, activePage, setActivePage }) => {
             </button>
             
             <div className="flex items-center gap-2 md:gap-3 md:pl-6 md:border-l md:border-[var(--border)]">
-              <div className="text-right hidden sm:block">
-                <p className="text-xs md:text-sm font-semibold leading-tight">Admin User</p>
-                <p className="text-[10px] text-text-muted uppercase tracking-tighter">Zimbabwe GMB</p>
+              <div className="hidden sm:block">
+                 <img src={gmbLogo} alt="GMB Regional HQ" className="h-8 w-auto object-contain" title="GMB Regional Intelligence" />
               </div>
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm flex items-center justify-center overflow-hidden">
-                <User size={18} className="text-gray-500" />
-              </div>
+              
               {/* Build tracking - will be visible during dev/testing */}
               <div className="fixed bottom-2 right-2 text-[8px] text-text-muted opacity-20 pointer-events-none">
-                Build: v1.0.5-SOLID-RED
+                Build: v1.0.8-OPEN-DASH
               </div>
             </div>
           </div>

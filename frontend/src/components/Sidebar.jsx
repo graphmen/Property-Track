@@ -77,8 +77,6 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
         <div className="px-4 mb-6">
             <img src={gmbLogo} alt="GMB" className="h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
         </div>
-        <SidebarItem icon={Users} label="Team" />
-        <SidebarItem icon={LogOut} label="Log Out" />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 # Stage 1: Build Frontend
 FROM node:20-slim AS frontend-builder
-LABEL build_version="1.0.7-FURNITURE"
+LABEL build_version="1.0.8-OPEN-DASH"
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
