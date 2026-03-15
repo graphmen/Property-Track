@@ -11,7 +11,7 @@ const data = [
 ];
 
 const StatsCard = ({ title, value, change, isPositive, icon: Icon }) => (
-  <div className="glass-card p-6 flex flex-col gap-4 min-w-[240px] flex-1">
+  <div className="glass-card p-4 md:p-6 flex flex-col gap-3 md:gap-4 w-full h-full">
     <div className="flex justify-between items-start">
       <div className="p-3 bg-gray-50 rounded-lg text-primary">
         <Icon size={24} />
