@@ -77,6 +77,7 @@ async def get_dashboard_stats():
         land_count = supabase.table('land').select('id', count='exact').execute().count
         building_count = supabase.table('buildings').select('id', count='exact').execute().count
         vehicle_count = supabase.table('vehicles').select('id', count='exact').execute().count
+        machinery_count = supabase.table('machinery').select('id', count='exact').execute().count
         furniture_count = supabase.table('furniture').select('id', count='exact').execute().count
         
         return {
