@@ -1,23 +1,29 @@
-const CACHE_NAME = 'property-track-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/favicon.png',
-  '/manifest.json'
-];
+// Cache Kill Switch
+// This updated SW immediately activates and deletes all previous caches
+// to rescue browsers stuck on older versions of the app.
 
 self.addEventListener('install', (event) => {
+  // Force the new worker to take over immediately
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          console.log('Clearing old cache:', cacheName);
+          return caches.delete(cacheName);
+        })
+      );
+    }).then(() => {
+      // Tell clients to reload if they need to fetch new assets
+      return self.clients.claim();
     })
   );
 });
 
+// Pass all requests directly to the network without caching
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
+  event.respondWith(fetch(event.request));
 });
