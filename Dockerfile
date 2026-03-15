@@ -1,6 +1,6 @@
 # Stage 1: Build Frontend
 FROM node:20-slim AS frontend-builder
-LABEL build_version="1.1.2-FLUID-GRID"
+LABEL build_version="1.1.3-FORCE-PULL"
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
