@@ -4,6 +4,16 @@ from .config import settings
 from .sync import get_supabase_client
 import pandas as pd
 import re
+from datetime import datetime
+
+def clean_date(val):
+    if pd.isna(val) or val == '': return None
+    try:
+        # Try parsing with pandas which handles multiple formats
+        dt = pd.to_datetime(val, dayfirst=True)
+        return dt.strftime('%Y-%m-%d %H:%M:%S')
+    except:
+        return None
 
 def get_gsheet_service():
     if settings.GOOGLE_SERVICE_ACCOUNT_JSON:
@@ -165,6 +175,8 @@ def sync_all_assets():
                         payload[db_col] = int(clean_numeric(val))
                     except:
                         payload[db_col] = 0
+                elif db_col == 'timestamp':
+                    payload[db_col] = clean_date(val)
                 else:
                     payload[db_col] = str(val) if val else None
             
