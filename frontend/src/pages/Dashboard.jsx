@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StatsCard from '../components/StatsCard';
-import { Building2, Truck, HardHat, LandPlot, AlertCircle, RefreshCw, PieChart } from 'lucide-react';
+import { Building2, Truck, HardHat, LandPlot, AlertCircle, RefreshCw, PieChart, Package } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -17,7 +17,7 @@ const Dashboard = () => {
         setStats(response.data);
       } else {
         console.error("Dashboard Stats Error:", response.data);
-        setStats({ land: 0, buildings: 0, vehicles: 0, machinery: 0 });
+        setStats({ land: 0, buildings: 0, vehicles: 0, machinery: 0, furniture: 0 });
       }
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -47,6 +47,7 @@ const Dashboard = () => {
     { title: 'Total Buildings', value: stats?.buildings || 0, change: 0, isPositive: true, icon: Building2 },
     { title: 'Motor Vehicles', value: stats?.vehicles || 0, change: 0, isPositive: true, icon: Truck },
     { title: 'Plant & Machinery', value: stats?.machinery || 0, change: 0, isPositive: true, icon: HardHat },
+    { title: 'Furniture & Fittings', value: stats?.furniture || 0, change: 0, isPositive: true, icon: Package },
   ];
 
   if (loading) return <div className="flex items-center justify-center h-[60vh] text-primary font-bold animate-pulse">Loading GMB Dashboard Data...</div>;
@@ -68,7 +69,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
         {statCards.map((stat, index) => (
           <StatsCard key={index} {...stat} />
         ))}
@@ -98,7 +99,7 @@ const Dashboard = () => {
           <div className="glass-card p-6 premium-gradient shadow-xl">
             <h3 className="font-bold mb-2">System Health</h3>
             <p className="text-[13px] opacity-90 mb-4">
-              All {Object.values(stats || { l: 0, b: 0, v: 0, m: 0 }).reduce((a, b) => (typeof b === 'number' ? a + b : a), 0)} assets successfully mapped and validated.
+              All {Object.values(stats || { l: 0, b: 0, v: 0, m: 0, f: 0 }).reduce((a, b) => (typeof b === 'number' ? a + b : a), 0)} assets successfully mapped and validated.
             </p>
             <div className="w-full bg-white/20 h-2 rounded-full mb-4">
                 <div className="bg-white h-full rounded-full transition-all duration-1000" style={{width: '100%'}}></div>

@@ -54,6 +54,17 @@ const InventoryView = ({ type }) => {
           { header: 'Qty', key: 'qty' },
           { header: 'Fair Value', key: 'fair_value' },
         ]
+      },
+      furniture: {
+        title: 'Furniture & Fittings',
+        table: 'furniture',
+        columns: [
+          { header: 'Asset Description', key: 'asset_description' },
+          { header: 'Serial No', key: 'serial_number' },
+          { header: 'Station', key: 'depot_name' },
+          { header: 'Qty', key: 'qty' },
+          { header: 'Fair Value', key: 'fair_value' },
+        ]
       }
   };
 
