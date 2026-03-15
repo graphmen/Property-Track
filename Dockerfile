@@ -1,6 +1,6 @@
 # Stage 1: Build Frontend
 FROM node:20-slim AS frontend-builder
-LABEL build_version="1.1.3-FORCE-PULL"
+LABEL build_version="1.1.4-FLEX-CARDS"
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install

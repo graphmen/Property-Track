@@ -69,9 +69,11 @@ const Dashboard = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-5">
+      <div className="flex flex-wrap lg:flex-nowrap gap-3 md:gap-5 w-full">
         {statCards.map((stat, index) => (
-          <StatsCard key={index} {...stat} />
+          <div key={index} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-1/5">
+            <StatsCard {...stat} />
+          </div>
         ))}
       </div>
 
