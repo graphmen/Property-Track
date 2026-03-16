@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from '../components/DataTable';
-import { Grid, List, ImageOff, MapPin, X, Download } from 'lucide-react';
+import BuildingMap from '../components/BuildingMap';
+import { Grid, List, ImageOff, MapPin, X, Download, Map as MapIcon } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -158,6 +159,12 @@ const InventoryView = ({ type }) => {
               >
                 <Grid size={16} /> Gallery
               </button>
+              <button
+                onClick={() => setViewMode('map')}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold transition-all ${viewMode === 'map' ? 'bg-white shadow text-primary' : 'text-text-muted hover:text-text-main'}`}
+              >
+                <MapIcon size={16} /> Satellite Map
+              </button>
             </div>
           )}
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -232,6 +239,8 @@ const InventoryView = ({ type }) => {
             </div>
           )}
         </div>
+      ) : viewMode === 'map' && type === 'buildings' ? (
+        <BuildingMap buildings={data} />
       ) : (
         <DataTable 
           title={`${selectedDepot ? depots.find(d => d.id == selectedDepot)?.name : 'National'} Asset List`} 
