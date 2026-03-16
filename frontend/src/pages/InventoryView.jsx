@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from '../components/DataTable';
-import { Grid, List, ImageOff, MapPin } from 'lucide-react';
+import { Grid, List, ImageOff, MapPin, X, Download } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -11,6 +11,7 @@ const InventoryView = ({ type }) => {
   const [selectedDepot, setSelectedDepot] = useState('');
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'gallery'
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const configs = {
     land: {
@@ -165,7 +166,7 @@ const InventoryView = ({ type }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {data.map((item, idx) => (
             <div key={idx} className="glass-card overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full bg-white relative">
-              <div className="h-48 bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-[var(--border)]">
+              <div className="h-48 bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-[var(--border)] cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
                 {item.photo_url ? (
                   <img 
                     src={item.photo_url} 
@@ -223,6 +224,50 @@ const InventoryView = ({ type }) => {
           columns={config.columns} 
           data={data} 
         />
+      )}
+
+      {/* Image Zoom Modal */}
+      {selectedImage && (
+        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-fade-in">
+          <button 
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 sm:top-8 sm:right-8 text-white/70 hover:text-white transition-colors bg-black/20 hover:bg-black/50 p-2 rounded-full cursor-pointer z-10"
+          >
+            <X size={28} />
+          </button>
+          
+          <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+            <img 
+              src={selectedImage.photo_url} 
+              alt={selectedImage.asset_description} 
+              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/10"
+            />
+            
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 sm:p-8 rounded-b-lg flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
+              <div className="text-white">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-1">{selectedImage.asset_description}</h2>
+                <div className="flex items-center gap-2 text-sm text-white/80">
+                  <MapPin size={16} />
+                  <span>{selectedImage.depot_name}</span>
+                  <span className="mx-2 opacity-50">•</span>
+                  <span className="font-medium text-secondary">{selectedImage.fair_value}</span>
+                </div>
+              </div>
+              
+              <a 
+                href={selectedImage.photo_url.replace('export=view', 'export=download')} 
+                target="_blank" 
+                rel="noreferrer"
+                download 
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg font-bold transition-colors shadow-lg whitespace-nowrap"
+              >
+                <Download size={18} />
+                <span className="hidden sm:inline">Download Photo</span>
+              </a>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
