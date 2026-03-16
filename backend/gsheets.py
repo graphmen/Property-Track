@@ -16,14 +16,20 @@ def clean_date(val):
         return None
 
 def convert_drive_link(url: str):
-    """Converts a Google Drive viewer URL into a direct image export link."""
+    """Converts a Google Drive viewer URL into a direct image thumbnail link."""
     if not isinstance(url, str) or not url:
         return None
-    # Extract the file ID from formats like https://drive.google.com/file/d/1AEwKbXKk.../view
-    match = re.search(r'/d/([a-zA-Z0-9_-]+)', url)
+    # Handle "FILENAME: URL" format if present
+    if ': http' in url:
+        url = url.split(': http')[-1]
+        url = 'http' + url
+    
+    # Extract the file ID from various formats
+    match = re.search(r'/d/([a-zA-Z0-9_-]+)', url) or re.search(r'id=([a-zA-Z0-9_-]+)', url)
     if match:
         file_id = match.group(1)
-        return f"https://drive.google.com/uc?export=view&id={file_id}"
+        # Using the lh3 format which is extremely reliable for direct embedding
+        return f"https://lh3.googleusercontent.com/d/{file_id}=w1000"
     return url
 
 def get_gsheet_service():
