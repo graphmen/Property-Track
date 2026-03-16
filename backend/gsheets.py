@@ -69,9 +69,10 @@ def sync_all_assets():
             "table": "furniture",
             "fields": {
                 "Timestamp": "timestamp",
+                "Region": "region",
                 "Location": "location",
-                "Asset Description": "asset_description",
-                "Asset Number": "asset_number",
+                "Asset Descrption": "asset_description",
+                "Asset NO": "asset_number",
                 "Serial Number": "serial_number",
                 "Qty": "qty",
                 "Plinth Area": "plinth_area",
@@ -79,13 +80,16 @@ def sync_all_assets():
                 "ERC": "erc",
                 "Depreciation %": "depreciation_pct",
                 "DRC": "drc",
-                "Fair Value": "fair_value"
+                "Fair Value": "fair_value",
+                "ERUL": "erul",
+                "Notes": "notes"
             }
         },
         "Motor Vehicles": {
             "table": "vehicles",
             "fields": {
                 "Timestamp": "timestamp",
+                "Region": "region",
                 "Make": "make",
                 "Model": "model",
                 "Registration Number": "registration_number",
@@ -97,16 +101,19 @@ def sync_all_assets():
                 "GRC": "grc",
                 "Depreciation %": "depreciation_pct",
                 "Fair Value": "fair_value",
-                "ERUL": "erul"
+                "ERUL": "erul",
+                "Notes": "notes"
             }
         },
         "Plant & Machinery": {
             "table": "machinery",
             "fields": {
                 "Timestamp": "timestamp",
+                "Region": "region",
+                "Station": "station",
                 "Location": "location",
-                "Asset Description": "asset_description",
-                "Asset Number": "asset_number",
+                "Asset Descrption": "asset_description",
+                "Asset NO": "asset_number",
                 "Serial Number": "serial_number",
                 "Qty": "qty",
                 "Plinth Area": "plinth_area",
@@ -115,16 +122,18 @@ def sync_all_assets():
                 "Depreciation %": "depreciation_pct",
                 "DRC": "drc",
                 "Fair Value": "fair_value",
-                "ERUL": "erul"
+                "ERUL": "erul",
+                "Notes": "notes"
             }
         },
         "Buildings": {
             "table": "buildings",
             "fields": {
                 "Timestamp": "timestamp",
+                "Region": "region",
                 "Location": "location",
-                "Asset Description": "asset_description",
-                "Asset Number": "asset_number",
+                "Asset Descrption": "asset_description",
+                "Asset NO": "asset_number",
                 "Qty": "qty",
                 "Plinth Area": "plinth_area",
                 "Rate": "rate",
@@ -134,15 +143,16 @@ def sync_all_assets():
                 "Fair Value": "fair_value",
                 "ERUL": "erul",
                 "Notes": "notes",
-                "Photo": "photo_url"
+                "Photos": "photo_url"
             }
         },
         "Land": {
             "table": "land",
             "fields": {
                 "Timestamp": "timestamp",
+                "Region": "region",
                 "Location": "location",
-                "Asset Description": "asset_description",
+                "Asset Descrption": "asset_description",
                 "Land size": "land_size",
                 "Rate": "rate",
                 "ERC": "erc",
@@ -175,9 +185,9 @@ def sync_all_assets():
             station_name = str(row.get('Station', '')).strip().upper()
             depot_id = depot_map.get(station_name)
             
-            if not depot_id: continue
-            
-            payload = {'depot_id': depot_id}
+            payload = {}
+            if depot_id:
+                payload['depot_id'] = depot_id
             for sheet_col, db_col in field_map.items():
                 val = row.get(sheet_col)
                 if db_col in ['qty', 'plinth_area', 'rate', 'erc', 'depreciation_pct', 'drc', 'fair_value', 'mileage', 'grc', 'erul', 'land_size']:
