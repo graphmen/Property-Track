@@ -15,6 +15,17 @@ def clean_date(val):
     except:
         return None
 
+def convert_drive_link(url: str):
+    """Converts a Google Drive viewer URL into a direct image export link."""
+    if not isinstance(url, str) or not url:
+        return None
+    # Extract the file ID from formats like https://drive.google.com/file/d/1AEwKbXKk.../view
+    match = re.search(r'/d/([a-zA-Z0-9_-]+)', url)
+    if match:
+        file_id = match.group(1)
+        return f"https://drive.google.com/uc?export=view&id={file_id}"
+    return url
+
 def get_gsheet_service():
     if settings.GOOGLE_SERVICE_ACCOUNT_JSON:
         import json
@@ -122,7 +133,8 @@ def sync_all_assets():
                 "DRC": "drc",
                 "Fair Value": "fair_value",
                 "ERUL": "erul",
-                "Notes": "notes"
+                "Notes": "notes",
+                "Photo": "photo_url"
             }
         },
         "Land": {
@@ -177,6 +189,8 @@ def sync_all_assets():
                         payload[db_col] = 0
                 elif db_col == 'timestamp':
                     payload[db_col] = clean_date(val)
+                elif db_col == 'photo_url':
+                    payload[db_col] = convert_drive_link(val)
                 else:
                     payload[db_col] = str(val) if val else None
             
