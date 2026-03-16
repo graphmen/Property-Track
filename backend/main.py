@@ -79,13 +79,15 @@ async def get_dashboard_stats():
         vehicle_count = supabase.table('vehicles').select('id', count='exact').execute().count
         machinery_count = supabase.table('machinery').select('id', count='exact').execute().count
         furniture_count = supabase.table('furniture').select('id', count='exact').execute().count
+        computer_count = supabase.table('computers').select('id', count='exact').execute().count
         
         return {
             "land": land_count,
             "buildings": building_count,
             "vehicles": vehicle_count,
             "machinery": machinery_count,
-            "furniture": furniture_count
+            "furniture": furniture_count,
+            "computers": computer_count
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}

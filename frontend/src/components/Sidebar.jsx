@@ -8,7 +8,8 @@ import {
   Users, 
   MapPin,
   LogOut,
-  Package
+  Package,
+  Monitor
 } from 'lucide-react';
 
 import logo from '../assets/logo.png';
@@ -36,6 +37,7 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
     { id: 'vehicles', label: 'Motor Vehicles', icon: Truck },
     { id: 'machinery', label: 'Plant & Machinery', icon: SettingsIcon },
     { id: 'furniture', label: 'Furniture & Fittings', icon: Package },
+    { id: 'computers', label: 'Computers', icon: Monitor },
     { id: 'reports', label: 'Analytics', icon: PieChart },
   ];
 

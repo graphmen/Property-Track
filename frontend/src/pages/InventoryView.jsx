@@ -32,7 +32,9 @@ const InventoryView = ({ type }) => {
         { header: 'Asset Number', key: 'asset_number' },
         { header: 'Description', key: 'asset_description' },
         { header: 'Station', key: 'depot_name' },
-        { header: 'Plinth Area', key: 'plinth_area' },
+        { header: 'Location X', key: 'location_x' },
+        { header: 'Location Y', key: 'location_y' },
+        { header: 'Accuracy (m)', key: 'accuracy' },
         { header: 'Fair Value', key: 'fair_value' },
       ]
     },
@@ -63,6 +65,18 @@ const InventoryView = ({ type }) => {
         table: 'furniture',
         columns: [
           { header: 'Asset Description', key: 'asset_description' },
+          { header: 'Serial No', key: 'serial_number' },
+          { header: 'Station', key: 'depot_name' },
+          { header: 'Qty', key: 'qty' },
+          { header: 'Fair Value', key: 'fair_value' },
+        ]
+      },
+      computers: {
+        title: 'Computer Inventory',
+        table: 'computers',
+        columns: [
+          { header: 'Asset Description', key: 'asset_description' },
+          { header: 'Asset Number', key: 'asset_number' },
           { header: 'Serial No', key: 'serial_number' },
           { header: 'Station', key: 'depot_name' },
           { header: 'Qty', key: 'qty' },

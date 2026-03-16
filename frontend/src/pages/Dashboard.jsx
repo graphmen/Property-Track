@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StatsCard from '../components/StatsCard';
-import { Building2, Truck, HardHat, LandPlot, AlertCircle, RefreshCw, PieChart, Package } from 'lucide-react';
+import { Building2, Truck, HardHat, LandPlot, AlertCircle, RefreshCw, PieChart, Package, Monitor } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -48,6 +48,7 @@ const Dashboard = () => {
     { title: 'Motor Vehicles', value: stats?.vehicles || 0, change: 0, isPositive: true, icon: Truck },
     { title: 'Plant & Machinery', value: stats?.machinery || 0, change: 0, isPositive: true, icon: HardHat },
     { title: 'Furniture & Fittings', value: stats?.furniture || 0, change: 0, isPositive: true, icon: Package },
+    { title: 'Computers', value: stats?.computers || 0, change: 0, isPositive: true, icon: Monitor },
   ];
 
   if (loading) return <div className="flex items-center justify-center h-[60vh] text-primary font-bold animate-pulse">Loading GMB Dashboard Data...</div>;
@@ -69,9 +70,9 @@ const Dashboard = () => {
         </button>
       </div>
 
-      <div className="flex flex-wrap lg:flex-nowrap gap-3 md:gap-5 w-full">
+      <div className="flex flex-wrap gap-4 md:gap-5 w-full">
         {statCards.map((stat, index) => (
-          <div key={index} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-1/5">
+          <div key={index} className="w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.33%-0.834rem)]">
             <StatsCard {...stat} />
           </div>
         ))}

@@ -16,6 +16,7 @@ function App() {
       case 'vehicles':
       case 'machinery':
       case 'furniture':
+      case 'computers':
         return <InventoryView type={activePage} />;
       case 'reports':
         return <ReportsView />;
