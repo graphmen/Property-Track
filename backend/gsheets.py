@@ -55,9 +55,20 @@ def fetch_sheet_data(sheet_name: str, range_name: str = "A:Z"):
         range=f"'{sheet_name}'!{range_name}"
     ).execute()
     values = result.get('values', [])
-    if not values:
+    if not values or len(values) < 1:
         return pd.DataFrame()
-    return pd.DataFrame(values[1:], columns=values[0])
+    
+    headers = values[0]
+    data = values[1:]
+    
+    # Pad rows that are shorter than the headers to avoid DataFrame construction errors
+    padded_data = []
+    for row in data:
+        if len(row) < len(headers):
+            row.extend([''] * (len(headers) - len(row)))
+        padded_data.append(row[:len(headers)])
+        
+    return pd.DataFrame(padded_data, columns=headers)
 
 def clean_numeric(val):
     if pd.isna(val) or val == '': return 0

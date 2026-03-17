@@ -184,10 +184,10 @@ const InventoryView = ({ type }) => {
       </div>
 
       {viewMode === 'gallery' && type === 'buildings' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {data.map((item, idx) => (
-            <div key={idx} className="glass-card overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full bg-white relative">
-              <div className="h-48 bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-[var(--border)] cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
+             <div key={idx} className="glass-card overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full bg-white relative">
+              <div className="h-40 bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-[var(--border)] cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
                 {item.photo_url ? (
                   <img 
                     src={item.photo_url} 
@@ -209,23 +209,38 @@ const InventoryView = ({ type }) => {
                   </div>
                 )}
               </div>
-              <div className="p-5 flex flex-col flex-grow">
-                <h3 className="font-bold text-text-main leading-snug mb-2" title={item.asset_description || 'Unknown Asset'}>{item.asset_description || 'Unlisted Building Asset'}</h3>
-                <div className="flex items-center gap-2 text-xs text-text-muted mb-5 font-medium">
-                  <MapPin size={14} className="text-primary/70" />
+              <div className="p-4 flex flex-col flex-grow">
+                <h3 className="font-bold text-text-main leading-snug mb-2 text-xs line-clamp-2 h-8" title={item.asset_description || 'Unknown Asset'}>{item.asset_description || 'Unlisted Building Asset'}</h3>
+                <div className="flex items-center gap-2 text-[10px] text-text-muted mb-4 font-medium">
+                  <MapPin size={12} className="text-primary/70" />
                   <span className="truncate">{item.depot_name}</span>
                 </div>
                 
-                <div className="mt-auto grid grid-cols-2 gap-4 pt-4 border-t border-[var(--border)] bg-gray-50 -mx-5 -mb-5 px-5 pb-5">
+                <div className="mt-auto grid grid-cols-2 gap-3 pt-3 border-t border-[var(--border)] bg-gray-50 -mx-4 -mb-4 px-4 pb-4">
                   <div>
-                    <p className="text-[9px] text-text-muted font-bold uppercase tracking-widest mb-1">Asset Registry No.</p>
-                    <p className="text-sm font-semibold text-text-main truncate" title={item.asset_number}>{item.asset_number || 'PENDING'}</p>
+                    <p className="text-[8px] text-text-muted font-bold uppercase tracking-widest mb-0.5">Asset No.</p>
+                    <p className="text-[10px] font-semibold text-text-main truncate" title={item.asset_number}>{item.asset_number || 'PENDING'}</p>
                   </div>
                   <div>
-                    <p className="text-[9px] text-text-muted font-bold uppercase tracking-widest mb-1">Current Fair Value</p>
-                    <p className="text-sm font-bold text-secondary truncate">{item.fair_value}</p>
+                    <p className="text-[8px] text-text-muted font-bold uppercase tracking-widest mb-0.5">Fair Value</p>
+                    <p className="text-[10px] font-bold text-secondary truncate">{item.fair_value}</p>
                   </div>
                 </div>
+                
+                {/* Immediate Download Button on Card */}
+                {item.photo_url && (
+                  <a 
+                    href={item.photo_url.replace('export=view', 'export=download')}
+                    target="_blank"
+                    rel="noreferrer"
+                    download
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-2 left-2 p-1.5 bg-black/50 hover:bg-primary text-white rounded-md backdrop-blur-sm transition-colors opacity-0 group-hover:opacity-100 z-10"
+                    title="Download Photo"
+                  >
+                    <Download size={14} />
+                  </a>
+                )}
               </div>
             </div>
           ))}
@@ -251,19 +266,22 @@ const InventoryView = ({ type }) => {
 
       {/* Image Zoom Modal */}
       {selectedImage && (
-        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-fade-in">
+        <div 
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 animate-fade-in cursor-pointer"
+          onClick={() => setSelectedImage(null)}
+        >
           <button 
             onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 sm:top-8 sm:right-8 text-white/70 hover:text-white transition-colors bg-black/20 hover:bg-black/50 p-2 rounded-full cursor-pointer z-10"
+            className="absolute top-4 right-4 sm:top-8 sm:right-8 text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-2.5 rounded-full cursor-pointer z-10"
           >
             <X size={28} />
           </button>
           
-          <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+          <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center cursor-default" onClick={(e) => e.stopPropagation()}>
             <img 
               src={selectedImage.photo_url} 
               alt={selectedImage.asset_description} 
-              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/5"
             />
             
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 sm:p-8 rounded-b-lg flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
