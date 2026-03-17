@@ -221,63 +221,41 @@ const InventoryView = ({ type }) => {
       </div>
 
       {viewMode === 'gallery' && type === 'buildings' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
           {filteredData.map((item, idx) => (
-             <div key={idx} className="glass-card overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full bg-white relative">
-              <div className="h-40 bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-[var(--border)] cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
+             <div key={idx} className="glass-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group flex flex-col bg-white relative rounded-lg border border-[var(--border)]">
+              <div className="h-24 bg-gray-50 relative overflow-hidden flex items-center justify-center cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
                 {item.photo_url ? (
                   <img 
                     src={item.photo_url} 
                     alt={item.asset_description || 'Building Photo'} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    onError={(e) => { e.target.onerror = null; e.target.src = ''; e.target.parentElement.innerHTML = '<div class="text-text-muted flex flex-col items-center gap-2"><svg class="w-8 h-8 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg><span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Broken Link</span></div>'; }}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { e.target.onerror = null; e.target.src = ''; e.target.parentElement.innerHTML = '<div class="text-text-muted flex flex-col items-center gap-1"><svg class="w-6 h-6 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg><span class="text-[9px] font-bold uppercase tracking-widest text-gray-400">No Image</span></div>'; }}
                   />
                 ) : (
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                      <ImageOff size={20} className="text-gray-400" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">No Photo Uploaded</span>
+                  <div className="flex flex-col items-center gap-1">
+                    <ImageOff size={16} className="text-gray-300" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">No Photo</span>
                   </div>
                 )}
-                {item.rate && (
-                  <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-bold text-primary shadow-sm border border-gray-100 uppercase tracking-widest">
-                    {item.rate}
-                  </div>
-                )}
-              </div>
-              <div className="p-4 flex flex-col flex-grow">
-                <h3 className="font-bold text-text-main leading-snug mb-2 text-xs line-clamp-2 h-8" title={item.asset_description || 'Unknown Asset'}>{item.asset_description || 'Unlisted Building Asset'}</h3>
-                <div className="flex items-center gap-2 text-[10px] text-text-muted mb-4 font-medium">
-                  <MapPin size={12} className="text-primary/70" />
-                  <span className="truncate">{item.depot_name}</span>
-                </div>
-                
-                <div className="mt-auto grid grid-cols-2 gap-3 pt-3 border-t border-[var(--border)] bg-gray-50 -mx-4 -mb-4 px-4 pb-4">
-                  <div>
-                    <p className="text-[8px] text-text-muted font-bold uppercase tracking-widest mb-0.5">Asset No.</p>
-                    <p className="text-[10px] font-semibold text-text-main truncate" title={item.asset_number}>{item.asset_number || 'PENDING'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[8px] text-text-muted font-bold uppercase tracking-widest mb-0.5">Fair Value</p>
-                    <p className="text-[10px] font-bold text-secondary truncate">{item.fair_value}</p>
-                  </div>
-                </div>
-                
-                {/* Immediate Download Button on Card */}
+                {/* Download button on hover */}
                 {item.photo_url && (
                   <a 
-                    href={item.photo_url.replace('export=view', 'export=download')}
+                    href={item.photo_url}
                     target="_blank"
                     rel="noreferrer"
                     download
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute top-2 left-2 p-1.5 bg-black/50 hover:bg-primary text-white rounded-md backdrop-blur-sm transition-colors opacity-0 group-hover:opacity-100 z-10"
-                    title="Download Photo"
+                    className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-primary text-white rounded transition-colors opacity-0 group-hover:opacity-100 z-10"
+                    title="Download"
                   >
-                    <Download size={14} />
+                    <Download size={10} />
                   </a>
                 )}
+              </div>
+              <div className="p-2">
+                <p className="text-[9px] font-semibold text-text-main line-clamp-1 leading-tight" title={item.asset_description || 'Unknown'}>{item.asset_description || 'Unlisted'}</p>
+                <p className="text-[8px] text-text-muted truncate mt-0.5">{item.depot_name}</p>
               </div>
             </div>
           ))}
