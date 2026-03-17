@@ -9,7 +9,8 @@ import {
   MapPin,
   LogOut,
   Package,
-  Monitor
+  Monitor,
+  RefreshCw
 } from 'lucide-react';
 
 import logo from '../assets/logo.png';
@@ -75,8 +76,42 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
         ))}
       </nav>
 
-      <div className="pt-6 border-t border-[var(--border)] mt-auto">
-        <div className="px-4 mb-6">
+      <div className="pt-6 border-t border-[var(--border)] mt-auto space-y-4">
+        <button 
+          onClick={async () => {
+            const btn = document.getElementById('sync-btn');
+            const icon = document.getElementById('sync-icon');
+            if (btn.disabled) return;
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            icon.classList.add('animate-spin');
+            
+            try {
+              const resp = await fetch('/api/sync/google-sheets', { method: 'POST' });
+              const data = await resp.json();
+              if (data.status === 'success') {
+                alert('Data Sync Successful! Refreshing page...');
+                window.location.reload();
+              } else {
+                alert('Sync Error: ' + data.message);
+              }
+            } catch (err) {
+              alert('Connection error during sync.');
+            } finally {
+              btn.disabled = false;
+              btn.classList.remove('opacity-50');
+              icon.classList.remove('animate-spin');
+            }
+          }}
+          id="sync-btn"
+          className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-text-muted hover:bg-primary/10 hover:text-primary transition-all text-xs font-semibold uppercase tracking-wider"
+        >
+          <div id="sync-icon"><RefreshCw size={14} /></div>
+          Sync Google Data
+        </button>
+
+        <div className="px-4 mb-2">
             <img src={gmbLogo} alt="GMB" className="h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
         </div>
       </div>

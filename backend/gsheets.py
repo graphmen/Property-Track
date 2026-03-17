@@ -245,8 +245,33 @@ def sync_all_assets():
             to_upsert.append(payload)
         
         if to_upsert:
-            supabase.table(table_name).upsert(to_upsert).execute()
-            sync_results[sheet_name] = len(to_upsert)
+            # Deduplicate the list before inserting if the sheet contains redundant entries
+            # We use a dictionary to keep the LAST seen entry for each unique identifier
+            deduped = {}
+            for item in to_upsert:
+                # Determine the unique identifier for this table
+                if table_name == 'vehicles':
+                    uid = item.get('registration_number')
+                elif table_name == 'land':
+                    uid = item.get('asset_description') # Land rarely has asset numbers
+                else:
+                    uid = item.get('asset_number')
+                
+                if uid and str(uid).strip():
+                    deduped[str(uid).strip()] = item
+                else:
+                    # If no UID, keep it as a unique entry (might be valid for some minor assets)
+                    deduped[f"NO_ID_{id(item)}"] = item
+            
+            final_data = list(deduped.values())
+            
+            # Clear existing data to ensure "Ground Truth" sync (removes duplicates and deleted items)
+            # Use a dummy filter that matches all rows (id != '000...000')
+            supabase.table(table_name).delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
+            
+            # Insert fresh, deduplicated data
+            supabase.table(table_name).insert(final_data).execute()
+            sync_results[sheet_name] = len(final_data)
             
     return sync_results
 
