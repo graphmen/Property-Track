@@ -245,31 +245,30 @@ def sync_all_assets():
             to_upsert.append(payload)
         
         if to_upsert:
-            # Deduplicate the list before inserting if the sheet contains redundant entries
-            # We use a dictionary to keep the LAST seen entry for each unique identifier
+            # Deduplicate using a composite key to preserve distinct assets sharing placeholder IDs
             deduped = {}
             for item in to_upsert:
-                # Determine the unique identifier for this table
-                if table_name == 'vehicles':
-                    uid = item.get('registration_number')
-                elif table_name == 'land':
-                    uid = item.get('asset_description') # Land rarely has asset numbers
-                else:
-                    uid = item.get('asset_number')
+                # Composite key: ID + Description + Location + Photo
+                # This ensures two different buildings with ID "0" stay separate
+                # we strip and lower to avoid whitespace/case issues
+                comp_parts = [
+                    str(item.get('asset_number', '')).strip().lower(),
+                    str(item.get('asset_description', '')).strip().lower(),
+                    str(item.get('location', '')).strip().lower(),
+                    str(item.get('registration_number', '')).strip().lower(), # for vehicles
+                    str(item.get('photo_url', '')).strip()
+                ]
+                comp_key = "|".join(comp_parts)
                 
-                if uid and str(uid).strip():
-                    deduped[str(uid).strip()] = item
-                else:
-                    # If no UID, keep it as a unique entry (might be valid for some minor assets)
-                    deduped[f"NO_ID_{id(item)}"] = item
+                # Keep the last seen entry (latest timestamp/row)
+                deduped[comp_key] = item
             
             final_data = list(deduped.values())
             
-            # Clear existing data to ensure "Ground Truth" sync (removes duplicates and deleted items)
-            # Use a dummy filter that matches all rows (id != '000...000')
+            # Clear existing data to ensure "Ground Truth" sync
             supabase.table(table_name).delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
             
-            # Insert fresh, deduplicated data
+            # Insert fresh, precisely deduplicated data
             supabase.table(table_name).insert(final_data).execute()
             sync_results[sheet_name] = len(final_data)
             

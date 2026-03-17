@@ -108,7 +108,7 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
           className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-text-muted hover:bg-primary/10 hover:text-primary transition-all text-xs font-semibold uppercase tracking-wider"
         >
           <div id="sync-icon"><RefreshCw size={14} /></div>
-          Sync Google Data
+          Sync Data
         </button>
 
         <div className="px-4 mb-2">
