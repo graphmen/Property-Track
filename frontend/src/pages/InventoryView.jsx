@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import ReactDOM from 'react-dom';
 import DataTable from '../components/DataTable';
 import BuildingMap from '../components/BuildingMap';
 import { Grid, List, ImageOff, MapPin, X, Download, Map as MapIcon, Search } from 'lucide-react';
@@ -300,64 +301,86 @@ const InventoryView = ({ type }) => {
         />
       )}
 
-      {/* Image Zoom Modal - Enhanced with high Z-index and robust closure */}
-      {selectedImage && (
+      {/* Image Zoom Modal — rendered via Portal directly on document.body to escape all parent stacking contexts */}
+      {selectedImage && ReactDOM.createPortal(
         <div 
-          className="fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-12 animate-fade-in"
-          style={{ cursor: 'zoom-out' }}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            backgroundColor: 'rgba(0,0,0,0.95)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+            cursor: 'zoom-out',
+          }}
           onClick={() => setSelectedImage(null)}
         >
-          {/* Explicit Close Button with high visibility */}
+          {/* Close Button */}
           <button 
             onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
-            className="absolute top-6 right-6 sm:top-10 sm:right-10 text-white bg-white/10 hover:bg-primary p-3 rounded-full transition-all z-[10001] group flex items-center gap-2 border border-white/20"
-            title="Close Gallery View"
+            style={{
+              position: 'absolute',
+              top: '1.5rem',
+              right: '1.5rem',
+              zIndex: 100000,
+              background: 'rgba(255,255,255,0.15)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              color: 'white',
+              borderRadius: '9999px',
+              padding: '0.75rem 1.25rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontWeight: 900,
+              fontSize: '0.7rem',
+              letterSpacing: '0.1em',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d12127'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.15)'}
           >
-            <X size={24} />
-            <span className="hidden sm:inline font-bold text-[10px] tracking-widest">CLOSE</span>
+            <X size={20} />
+            <span>CLOSE</span>
           </button>
-          
-          <div className="relative max-w-5xl w-full flex flex-col items-center justify-center pointer-events-auto" onClick={(e) => e.stopPropagation()}>
+
+          {/* Inner content — stops propagation so clicking on image/info doesnt close */}
+          <div 
+            style={{ maxWidth: '900px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'default' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <img 
               src={selectedImage.photo_url} 
               alt={selectedImage.asset_description} 
-              className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10"
-              style={{ cursor: 'default' }}
+              style={{ maxWidth: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 0 60px rgba(0,0,0,0.8)' }}
             />
             
-            <div className="mt-6 w-full max-w-4xl bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row justify-between items-end sm:items-center gap-6 shadow-2xl">
-              <div className="text-white flex-1">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 text-primary-light line-clamp-2 uppercase">{selectedImage.asset_description}</h2>
-                <div className="flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/50">
-                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
-                    <MapPin size={12} className="text-secondary" />
-                    <span>{selectedImage.depot_name}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
-                    <span className="text-secondary">ASSET:</span>
-                    <span className="text-white">{selectedImage.asset_number || '0'}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
-                    <span className="text-secondary">VALUE:</span>
-                    <span className="text-white">{selectedImage.fair_value}</span>
-                  </div>
+            <div style={{ marginTop: '1.5rem', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ color: 'white' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{selectedImage.asset_description}</h2>
+                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.5)', flexWrap: 'wrap' }}>
+                  <span>📍 {selectedImage.depot_name}</span>
+                  <span>🏷 {selectedImage.asset_number || 'N/A'}</span>
+                  <span>💵 {selectedImage.fair_value}</span>
                 </div>
               </div>
               
               <a 
-                href={selectedImage.photo_url.replace('export=view', 'export=download')} 
+                href={selectedImage.photo_url} 
                 target="_blank" 
                 rel="noreferrer"
                 download 
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl font-black transition-all shadow-xl hover:scale-105 active:scale-95 text-xs tracking-widest"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: '#d12127', color: 'white', borderRadius: '12px', fontWeight: 900, fontSize: '0.7rem', letterSpacing: '0.1em', textDecoration: 'none', textTransform: 'uppercase', boxShadow: '0 4px 20px rgba(209,33,39,0.4)' }}
               >
-                <Download size={18} />
-                <span>DOWNLOAD PHOTO</span>
+                <Download size={16} />
+                DOWNLOAD
               </a>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
