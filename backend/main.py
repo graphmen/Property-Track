@@ -19,7 +19,7 @@ app.add_middleware(
 
 @app.get("/api")
 async def root():
-    return {"message": "GMB Property Track API is online"}
+    return {"message": "GMB Property Track API v1.4.5 is online"}
 
 @app.get("/api/health/static")
 async def health_static():
@@ -88,6 +88,39 @@ async def get_dashboard_stats():
             "machinery": machinery_count,
             "furniture": furniture_count,
             "computers": computer_count
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.get("/api/reports/summary")
+async def get_reports_summary():
+    from .sync import get_supabase_client
+    supabase = get_supabase_client()
+    try:
+        category_counts = {
+            "Land":      supabase.table('land').select('id', count='exact').execute().count or 0,
+            "Buildings": supabase.table('buildings').select('id', count='exact').execute().count or 0,
+            "Vehicles":  supabase.table('vehicles').select('id', count='exact').execute().count or 0,
+            "Machinery": supabase.table('machinery').select('id', count='exact').execute().count or 0,
+            "Furniture": supabase.table('furniture').select('id', count='exact').execute().count or 0,
+            "Computers": supabase.table('computers').select('id', count='exact').execute().count or 0,
+        }
+        depots_raw = supabase.table('depots').select('id, name').order('name').execute().data or []
+        depot_map = {d['id']: {'name': d['name'], 'count': 0} for d in depots_raw}
+        for tbl in ['land', 'buildings', 'vehicles', 'machinery', 'furniture', 'computers']:
+            rows = supabase.table(tbl).select('depot_id').execute().data or []
+            for row in rows:
+                did = row.get('depot_id')
+                if did and did in depot_map:
+                    depot_map[did]['count'] += 1
+        by_depot = sorted(
+            [{'name': v['name'], 'count': v['count']} for v in depot_map.values()],
+            key=lambda x: x['count'], reverse=True
+        )[:10]
+        return {
+            "by_category": [{"name": k, "count": v} for k, v in category_counts.items()],
+            "by_depot": by_depot,
+            "total": sum(category_counts.values())
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
