@@ -1,6 +1,14 @@
-# Single stage build - uses pre-built frontend from backend/static
+# Stage 1: Build Frontend
+FROM node:20-slim AS frontend-builder
+LABEL build_version="1.4.5-STABLE-MULTI-STAGE"
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+
+# Stage 2: Build Backend & Serve
 FROM python:3.11-slim
-LABEL build_version="1.4.4-COMPACT-GALLERY-PORTAL-LIGHTBOX"
 WORKDIR /app
 
 # Install system dependencies
@@ -16,8 +24,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend /app/backend
 COPY regmbassets /app/regmbassets
 
-# NOTE: frontend is pre-built and committed to backend/static
-# No npm build needed - static files are already in backend/static
+# Copy frontend build from Stage 1 to static folder
+RUN mkdir -p /app/backend/static
+COPY --from=frontend-builder /app/frontend/dist /app/backend/static/
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
