@@ -1,6 +1,6 @@
 # Stage 1: Build Frontend
 FROM node:20-slim AS frontend-builder
-LABEL build_version="1.2.1-PHOTO-MODAL"
+LABEL build_version="1.4.4-COMPACT-GALLERY-PORTAL-LIGHTBOX"
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
