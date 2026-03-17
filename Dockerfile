@@ -1,22 +1,14 @@
-# Stage 1: Build Frontend
-FROM node:20-slim AS frontend-builder
-LABEL build_version="1.4.4-COMPACT-GALLERY-PORTAL-LIGHTBOX"
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ ./
-RUN npm run build
-
-# Stage 2: Build Backend & Serve
+# Single stage build - uses pre-built frontend from backend/static
 FROM python:3.11-slim
+LABEL build_version="1.4.4-COMPACT-GALLERY-PORTAL-LIGHTBOX"
 WORKDIR /app
 
-# Install dependencies (system level)
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements from root
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -24,9 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend /app/backend
 COPY regmbassets /app/regmbassets
 
-# Copy frontend build from Stage 1 to a specific static folder
-RUN mkdir -p /app/backend/static
-COPY --from=frontend-builder /app/frontend/dist /app/backend/static/
+# NOTE: frontend is pre-built and committed to backend/static
+# No npm build needed - static files are already in backend/static
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
@@ -35,5 +26,5 @@ ENV PORT=8080
 # Expose port
 EXPOSE 8080
 
-# Run the application using Gunicorn for better stability on Railway
+# Run the application
 CMD ["gunicorn", "backend.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8080"]
