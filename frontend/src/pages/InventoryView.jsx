@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
 import BuildingMap from '../components/BuildingMap';
-import { Grid, List, ImageOff, MapPin, X, Download, Map as MapIcon } from 'lucide-react';
+import { Grid, List, ImageOff, MapPin, X, Download, Map as MapIcon, Search } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -10,9 +10,19 @@ const InventoryView = ({ type }) => {
   const [data, setData] = useState([]);
   const [depots, setDepots] = useState([]);
   const [selectedDepot, setSelectedDepot] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'gallery'
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Handle ESC key to close lightbox
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setSelectedImage(null);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   const configs = {
     land: {
@@ -87,6 +97,18 @@ const InventoryView = ({ type }) => {
   };
 
   const config = configs[type] || { title: 'Unknown', columns: [] };
+
+  // Live search: filter across all column values
+  const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) return data;
+    const q = searchQuery.toLowerCase();
+    return data.filter(row =>
+      config.columns.some(col => {
+        const val = row[col.key];
+        return val != null && String(val).toLowerCase().includes(q);
+      })
+    );
+  }, [data, searchQuery, config.columns]);
 
   useEffect(() => {
     const fetchDepots = async () => {
@@ -167,25 +189,39 @@ const InventoryView = ({ type }) => {
               </button>
             </div>
           )}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Station Filtering:</label>
-            <select 
-              value={selectedDepot}
-              onChange={(e) => setSelectedDepot(e.target.value)}
-              className="px-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[200px] shadow-sm font-medium"
-            >
-              <option value="">All Regions / Stations</option>
-              {depots.map(depot => (
-                <option key={depot.id} value={depot.id}>{depot.name}</option>
-              ))}
-            </select>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
+            {/* Search */}
+            <div className="relative">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search records..."
+                className="pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[180px] shadow-sm font-medium"
+              />
+            </div>
+            {/* Station Filter */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Station:</label>
+              <select 
+                value={selectedDepot}
+                onChange={(e) => setSelectedDepot(e.target.value)}
+                className="px-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[180px] shadow-sm font-medium"
+              >
+                <option value="">All Regions / Stations</option>
+                {depots.map(depot => (
+                  <option key={depot.id} value={depot.id}>{depot.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
 
       {viewMode === 'gallery' && type === 'buildings' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {data.map((item, idx) => (
+          {filteredData.map((item, idx) => (
              <div key={idx} className="glass-card overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full bg-white relative">
               <div className="h-40 bg-gray-50 relative overflow-hidden flex items-center justify-center border-b border-[var(--border)] cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
                 {item.photo_url ? (
@@ -260,38 +296,51 @@ const InventoryView = ({ type }) => {
         <DataTable 
           title={`${selectedDepot ? depots.find(d => d.id == selectedDepot)?.name : 'National'} Asset List`} 
           columns={config.columns} 
-          data={data} 
+          data={filteredData} 
         />
       )}
 
-      {/* Image Zoom Modal */}
+      {/* Image Zoom Modal - Enhanced with high Z-index and robust closure */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 animate-fade-in cursor-pointer"
+          className="fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-12 animate-fade-in"
+          style={{ cursor: 'zoom-out' }}
           onClick={() => setSelectedImage(null)}
         >
+          {/* Explicit Close Button with high visibility */}
           <button 
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 sm:top-8 sm:right-8 text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 p-2.5 rounded-full cursor-pointer z-10"
+            onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
+            className="absolute top-6 right-6 sm:top-10 sm:right-10 text-white bg-white/10 hover:bg-primary p-3 rounded-full transition-all z-[10001] group flex items-center gap-2 border border-white/20"
+            title="Close Gallery View"
           >
-            <X size={28} />
+            <X size={24} />
+            <span className="hidden sm:inline font-bold text-[10px] tracking-widest">CLOSE</span>
           </button>
           
-          <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center cursor-default" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-5xl w-full flex flex-col items-center justify-center pointer-events-auto" onClick={(e) => e.stopPropagation()}>
             <img 
               src={selectedImage.photo_url} 
               alt={selectedImage.asset_description} 
-              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/5"
+              className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10"
+              style={{ cursor: 'default' }}
             />
             
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 sm:p-8 rounded-b-lg flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
-              <div className="text-white">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-1">{selectedImage.asset_description}</h2>
-                <div className="flex items-center gap-2 text-sm text-white/80">
-                  <MapPin size={16} />
-                  <span>{selectedImage.depot_name}</span>
-                  <span className="mx-2 opacity-50">•</span>
-                  <span className="font-medium text-secondary">{selectedImage.fair_value}</span>
+            <div className="mt-6 w-full max-w-4xl bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row justify-between items-end sm:items-center gap-6 shadow-2xl">
+              <div className="text-white flex-1">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 text-primary-light line-clamp-2 uppercase">{selectedImage.asset_description}</h2>
+                <div className="flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/50">
+                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+                    <MapPin size={12} className="text-secondary" />
+                    <span>{selectedImage.depot_name}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+                    <span className="text-secondary">ASSET:</span>
+                    <span className="text-white">{selectedImage.asset_number || '0'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
+                    <span className="text-secondary">VALUE:</span>
+                    <span className="text-white">{selectedImage.fair_value}</span>
+                  </div>
                 </div>
               </div>
               
@@ -301,10 +350,10 @@ const InventoryView = ({ type }) => {
                 rel="noreferrer"
                 download 
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg font-bold transition-colors shadow-lg whitespace-nowrap"
+                className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl font-black transition-all shadow-xl hover:scale-105 active:scale-95 text-xs tracking-widest"
               >
                 <Download size={18} />
-                <span className="hidden sm:inline">Download Photo</span>
+                <span>DOWNLOAD PHOTO</span>
               </a>
             </div>
           </div>
