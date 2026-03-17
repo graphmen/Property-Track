@@ -50,15 +50,42 @@ body {
 
 .grid { display: grid; }
 .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 
 @media (min-width: 768px) {
   .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 
 @media (min-width: 1024px) {
   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .lg\:col-span-2 { grid-column: span 2 / span 2; }
+}
+
+@media (min-width: 1280px) {
+  .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .xl\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .xl\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .xl\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1536px) {
+  .\32 xl\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .\32 xl\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .\32 xl\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 }
 
 /* Spacing & Sizing */
@@ -95,9 +122,12 @@ body {
 .mt-auto { margin-top: auto; }
 
 .w-full { width: 100%; }
+.w-6 { width: 1.5rem; }
 .h-full { height: 100%; }
+.h-24 { height: 6rem; }
 .h-10 { height: 2.5rem; }
 .h-8 { height: 2rem; }
+.h-6 { height: 1.5rem; }
 .h-2 { height: 0.5rem; }
 .h-screen { height: 100vh; }
 
@@ -247,7 +277,21 @@ body {
 .-translate-y-1\/2 { transform: translateY(-50%); }
 
 .transition-transform { transition-property: transform; }
+.transition-opacity { transition-property: opacity; }
 .ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Hover & Animation Utilities */
+.hover\:shadow-md:hover { box-shadow: var(--shadow-md); }
+.hover\:shadow-lg:hover { box-shadow: var(--shadow-lg); }
+.hover\:-translate-y-0\.5:hover { transform: translateY(-0.125rem); }
+.hover\:-translate-y-1:hover { transform: translateY(-0.25rem); }
+.hover\:scale-105:hover { transform: scale(1.05); }
+.hover\:scale-110:hover { transform: scale(1.1); }
+
+/* Group Hover Logic (Specific to card) */
+.group:hover .group-hover\:scale-105 { transform: scale(1.05); transition: transform 0.5s ease; }
+.group:hover .group-hover\:scale-110 { transform: scale(1.1); transition: transform 0.7s ease; }
+.group:hover .group-hover\:opacity-100 { opacity: 1; }
 
 .min-h-screen { min-height: 100vh; }
 .top-1\/2 { top: 50% !important; }
@@ -263,3 +307,8 @@ body {
 .bg-gray-200 { background-color: #E9ECEF; }
 .bg-gray-50 { background-color: #F8F9FA; }
 .bg-black\/50 { background-color: rgba(0, 0, 0, 0.5); }
+.bg-black\/60 { background-color: rgba(0, 0, 0, 0.6); }
+
+.opacity-0 { opacity: 0; }
+.line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.leading-tight { line-height: 1.25; }

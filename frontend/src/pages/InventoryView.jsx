@@ -223,7 +223,7 @@ const InventoryView = ({ type }) => {
       {viewMode === 'gallery' && type === 'buildings' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
           {filteredData.map((item, idx) => (
-             <div key={idx} className="glass-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group flex flex-col bg-white relative rounded-lg border border-[var(--border)]">
+             <div key={idx} className="glass-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group flex flex-col bg-white relative rounded-lg border">
               <div className="h-24 bg-gray-50 relative overflow-hidden flex items-center justify-center cursor-pointer" onClick={() => item.photo_url && setSelectedImage(item)}>
                 {item.photo_url ? (
                   <img 
