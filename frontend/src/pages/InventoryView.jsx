@@ -30,11 +30,15 @@ const InventoryView = ({ type }) => {
       title: 'Land Inventory',
       table: 'land',
       columns: [
-        { header: 'Depot/Station', key: 'depot_name' },
+        { header: 'Region', key: 'region' },
+        { header: 'Station', key: 'depot_name' },
         { header: 'Location', key: 'location' },
         { header: 'Description', key: 'asset_description' },
         { header: 'Size (m²)', key: 'land_size' },
+        { header: 'Rate', key: 'rate' },
+        { header: 'ERC', key: 'erc' },
         { header: 'Fair Value', key: 'fair_value' },
+        { header: 'Notes', key: 'notes' }
       ]
     },
     buildings: {
@@ -43,11 +47,20 @@ const InventoryView = ({ type }) => {
       columns: [
         { header: 'Asset Number', key: 'asset_number' },
         { header: 'Description', key: 'asset_description' },
+        { header: 'Region', key: 'region' },
         { header: 'Station', key: 'depot_name' },
-        { header: 'Location X', key: 'location_x' },
-        { header: 'Location Y', key: 'location_y' },
-        { header: 'Accuracy (m)', key: 'accuracy' },
+        { header: 'Location', key: 'location' },
+        { header: 'Qty', key: 'qty' },
+        { header: 'Plinth Area', key: 'plinth_area' },
+        { header: 'Rate', key: 'rate' },
+        { header: 'ERC', key: 'erc' },
+        { header: 'Depreciation %', key: 'depreciation_pct' },
+        { header: 'DRC', key: 'drc' },
         { header: 'Fair Value', key: 'fair_value' },
+        { header: 'ERUL', key: 'erul' },
+        { header: 'Notes', key: 'notes' },
+        { header: 'Location X', key: 'location_x' },
+        { header: 'Location Y', key: 'location_y' }
       ]
     },
     vehicles: {
@@ -55,46 +68,84 @@ const InventoryView = ({ type }) => {
       table: 'vehicles',
       columns: [
         { header: 'Reg Number', key: 'registration_number' },
-        { header: 'Make/Model', key: 'model' },
+        { header: 'Make', key: 'make' },
+        { header: 'Model', key: 'model' },
+        { header: 'Region', key: 'region' },
+        { header: 'Station', key: 'depot_name' },
         { header: 'Year', key: 'year_of_manufacture' },
         { header: 'Mileage', key: 'mileage' },
+        { header: 'Engine Number', key: 'engine_number' },
+        { header: 'Chassis Number', key: 'chassis_number' },
+        { header: 'Condition', key: 'condition' },
+        { header: 'GRC', key: 'grc' },
+        { header: 'Depreciation %', key: 'depreciation_pct' },
         { header: 'Fair Value', key: 'fair_value' },
+        { header: 'ERUL', key: 'erul' },
+        { header: 'Notes', key: 'notes' }
       ]
     },
     machinery: {
-        title: 'Plant & Machinery',
-        table: 'machinery',
-        columns: [
-          { header: 'Asset Description', key: 'asset_description' },
-          { header: 'Serial No', key: 'serial_number' },
-          { header: 'Station', key: 'depot_name' },
-          { header: 'Qty', key: 'qty' },
-          { header: 'Fair Value', key: 'fair_value' },
-        ]
-      },
-      furniture: {
-        title: 'Furniture & Fittings',
-        table: 'furniture',
-        columns: [
-          { header: 'Asset Description', key: 'asset_description' },
-          { header: 'Serial No', key: 'serial_number' },
-          { header: 'Station', key: 'depot_name' },
-          { header: 'Qty', key: 'qty' },
-          { header: 'Fair Value', key: 'fair_value' },
-        ]
-      },
-      computers: {
-        title: 'Computer Inventory',
-        table: 'computers',
-        columns: [
-          { header: 'Asset Description', key: 'asset_description' },
-          { header: 'Asset Number', key: 'asset_number' },
-          { header: 'Serial No', key: 'serial_number' },
-          { header: 'Station', key: 'depot_name' },
-          { header: 'Qty', key: 'qty' },
-          { header: 'Fair Value', key: 'fair_value' },
-        ]
-      }
+      title: 'Plant & Machinery',
+      table: 'machinery',
+      columns: [
+        { header: 'Description', key: 'asset_description' },
+        { header: 'Asset Number', key: 'asset_number' },
+        { header: 'Serial No', key: 'serial_number' },
+        { header: 'Region', key: 'region' },
+        { header: 'Station', key: 'depot_name' },
+        { header: 'Location', key: 'location' },
+        { header: 'Qty', key: 'qty' },
+        { header: 'Plinth Area', key: 'plinth_area' },
+        { header: 'Rate', key: 'rate' },
+        { header: 'ERC', key: 'erc' },
+        { header: 'Depreciation %', key: 'depreciation_pct' },
+        { header: 'DRC', key: 'drc' },
+        { header: 'Fair Value', key: 'fair_value' },
+        { header: 'ERUL', key: 'erul' },
+        { header: 'Notes', key: 'notes' }
+      ]
+    },
+    furniture: {
+      title: 'Furniture & Fittings',
+      table: 'furniture',
+      columns: [
+        { header: 'Description', key: 'asset_description' },
+        { header: 'Asset Number', key: 'asset_number' },
+        { header: 'Serial No', key: 'serial_number' },
+        { header: 'Region', key: 'region' },
+        { header: 'Station', key: 'depot_name' },
+        { header: 'Location', key: 'location' },
+        { header: 'Qty', key: 'qty' },
+        { header: 'Plinth Area', key: 'plinth_area' },
+        { header: 'Rate', key: 'rate' },
+        { header: 'ERC', key: 'erc' },
+        { header: 'Depreciation %', key: 'depreciation_pct' },
+        { header: 'DRC', key: 'drc' },
+        { header: 'Fair Value', key: 'fair_value' },
+        { header: 'ERUL', key: 'erul' },
+        { header: 'Notes', key: 'notes' }
+      ]
+    },
+    computers: {
+      title: 'Computer Inventory',
+      table: 'computers',
+      columns: [
+        { header: 'Description', key: 'asset_description' },
+        { header: 'Asset Number', key: 'asset_number' },
+        { header: 'Serial No', key: 'serial_number' },
+        { header: 'Region', key: 'region' },
+        { header: 'Station', key: 'depot_name' },
+        { header: 'Location', key: 'location' },
+        { header: 'Qty', key: 'qty' },
+        { header: 'Rate', key: 'rate' },
+        { header: 'ERC', key: 'erc' },
+        { header: 'Depreciation %', key: 'depreciation_pct' },
+        { header: 'DRC', key: 'drc' },
+        { header: 'Fair Value', key: 'fair_value' },
+        { header: 'ERUL', key: 'erul' },
+        { header: 'Notes', key: 'notes' }
+      ]
+    }
   };
 
   const config = configs[type] || { title: 'Unknown', columns: [] };
