@@ -250,7 +250,7 @@ const InventoryView = ({ type }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search records..."
-                className="pl-9 pr-4 py-2.5 bg-transparent border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[180px] font-medium"
+                className="pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-all min-w-[180px] font-medium shadow-sm"
               />
             </div>
             {/* Station Filter */}
