@@ -19,7 +19,7 @@ app.add_middleware(
 
 @app.get("/api")
 async def root():
-    return {"message": "GMB Property Track API v1.5.3 is online"}
+    return {"message": "GMB Property Track API v1.5.4 is online"}
 
 @app.get("/api/health/static")
 async def health_static():

@@ -244,14 +244,14 @@ const InventoryView = ({ type }) => {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
             {/* Search */}
             <div className="relative">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search records..."
-                className="pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-all min-w-[180px] font-medium shadow-sm"
+                className="pl-4 pr-9 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-all min-w-[180px] font-medium shadow-sm"
               />
+              <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
             </div>
             {/* Station Filter */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
