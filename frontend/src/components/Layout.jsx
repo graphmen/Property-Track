@@ -59,10 +59,6 @@ const Layout = ({ children, activePage, setActivePage }) => {
                  <img src={gmbLogo} alt="GMB Regional HQ" className="h-8 w-auto object-contain" title="GMB Regional Intelligence" />
               </div>
               
-              {/* Build tracking - will be visible during dev/testing */}
-              <div className="fixed bottom-2 right-2 text-[8px] text-text-muted opacity-20 pointer-events-none">
-                Build: v1.0.8-OPEN-DASH
-              </div>
             </div>
           </div>
         </header>

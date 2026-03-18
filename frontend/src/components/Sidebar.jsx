@@ -109,7 +109,7 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar, onSync }) 
 
       {/* GMB Logo only at bottom */}
       <div className="pt-6 border-t border-[var(--border)] mt-auto flex justify-center">
-        <img src={gmbLogo} alt="GMB" className="h-10 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+        <img src={gmbLogo} alt="GMB" className="h-10 w-auto transition-all cursor-pointer" />
       </div>
     </div>
   );
