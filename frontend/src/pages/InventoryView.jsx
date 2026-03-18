@@ -215,7 +215,7 @@ const InventoryView = ({ type }) => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
         <div>
           <h1 className="text-2xl font-bold mb-1 tracking-tight">{config.title}</h1>
-          <p className="text-text-muted italic text-sm">Bespoke asset register for GMB property class: {type}</p>
+          <p className="text-text-muted italic text-sm">Asset Register for GMB Property Class: {config.title}</p>
         </div>
         
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -250,7 +250,7 @@ const InventoryView = ({ type }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search records..."
-                className="pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[180px] shadow-sm font-medium"
+                className="pl-9 pr-4 py-2.5 bg-transparent border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:border-primary transition-colors min-w-[180px] font-medium"
               />
             </div>
             {/* Station Filter */}

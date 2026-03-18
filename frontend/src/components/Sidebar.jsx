@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Home, 
   Building2, 
   Truck, 
   Settings as SettingsIcon, 
   PieChart, 
-  Users, 
   MapPin,
   LogOut,
   Package,
@@ -30,7 +29,9 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
   </div>
 );
 
-const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
+const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar, onSync }) => {
+  const [syncing, setSyncing] = useState(false);
+
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'land', label: 'Land', icon: MapPin },
@@ -47,6 +48,25 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
     if (closeSidebar) closeSidebar();
   };
 
+  const handleSync = async () => {
+    if (syncing) return;
+    setSyncing(true);
+    try {
+      const resp = await fetch('/api/sync/google-sheets', { method: 'POST' });
+      const data = await resp.json();
+      if (data.status === 'success') {
+        alert('Data Sync Successful! Refreshing page...');
+        window.location.reload();
+      } else {
+        alert('Sync Error: ' + data.message);
+      }
+    } catch (err) {
+      alert('Connection error during sync.');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="w-[var(--sidebar-width)] h-screen bg-white border-r border-[var(--border)] p-6 flex flex-col relative">
       {/* Mobile Close Button */}
@@ -59,10 +79,12 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
         </button>
       )}
 
+      {/* Logo */}
       <div className="flex items-center gap-3 mb-10 px-2">
         <img src={logo} alt="Property Track" className="h-10 w-auto" />
       </div>
 
+      {/* Main Nav */}
       <nav className="flex-1 space-y-2 text-sm">
         <p className="px-4 mb-4 text-[10px] uppercase tracking-wider text-text-muted font-bold">Main Navigation</p>
         {menuItems.map((item) => (
@@ -74,46 +96,20 @@ const Sidebar = ({ activePage, setActivePage, isMobile, closeSidebar }) => {
             onClick={() => handleNavClick(item.id)}
           />
         ))}
+
+        {/* Sync button styled as a nav item */}
+        <div
+          onClick={handleSync}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-100 text-gray-600 ${syncing ? 'opacity-60 pointer-events-none' : ''}`}
+        >
+          <RefreshCw size={20} className={syncing ? 'animate-spin' : ''} />
+          <span className="font-medium">{syncing ? 'Syncing...' : 'Sync Data'}</span>
+        </div>
       </nav>
 
-      <div className="pt-6 border-t border-[var(--border)] mt-auto space-y-4">
-        <button 
-          onClick={async () => {
-            const btn = document.getElementById('sync-btn');
-            const icon = document.getElementById('sync-icon');
-            if (btn.disabled) return;
-            
-            btn.disabled = true;
-            btn.classList.add('opacity-50');
-            icon.classList.add('animate-spin');
-            
-            try {
-              const resp = await fetch('/api/sync/google-sheets', { method: 'POST' });
-              const data = await resp.json();
-              if (data.status === 'success') {
-                alert('Data Sync Successful! Refreshing page...');
-                window.location.reload();
-              } else {
-                alert('Sync Error: ' + data.message);
-              }
-            } catch (err) {
-              alert('Connection error during sync.');
-            } finally {
-              btn.disabled = false;
-              btn.classList.remove('opacity-50');
-              icon.classList.remove('animate-spin');
-            }
-          }}
-          id="sync-btn"
-          className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-gray-50 text-text-muted hover:bg-primary/10 hover:text-primary transition-all text-xs font-semibold uppercase tracking-wider"
-        >
-          <div id="sync-icon"><RefreshCw size={14} /></div>
-          Sync Data
-        </button>
-
-        <div className="px-4 mb-2">
-            <img src={gmbLogo} alt="GMB" className="h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
-        </div>
+      {/* GMB Logo only at bottom */}
+      <div className="pt-6 border-t border-[var(--border)] mt-auto flex justify-center">
+        <img src={gmbLogo} alt="GMB" className="h-10 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
       </div>
     </div>
   );
