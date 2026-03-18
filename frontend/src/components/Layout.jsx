@@ -38,14 +38,7 @@ const Layout = ({ children, activePage, setActivePage }) => {
               <Menu size={24} strokeWidth={2.5} />
             </button>
 
-            <div className="flex-1 max-w-xl relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className="w-full bg-white border border-[var(--border)] rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:border-primary transition-colors shadow-sm text-sm"
-              />
-            </div>
+
           </div>
           
           <div className="flex items-center gap-3 md:gap-6">
