@@ -58,7 +58,8 @@ def fetch_sheet_data(sheet_name: str, range_name: str = "A:Z"):
     if not values or len(values) < 1:
         return pd.DataFrame()
     
-    headers = values[0]
+    # Strip whitespace from headers to avoid mapping failures
+    headers = [str(h).strip() for h in values[0]]
     data = values[1:]
     
     # Pad rows that are shorter than the headers to avoid DataFrame construction errors
@@ -207,6 +208,15 @@ def sync_all_assets():
     depots_resp = supabase.table('depots').select('id, name').execute()
     depot_map = {d['name'].strip().upper(): d['id'] for d in depots_resp.data}
     
+    # Alias mapping for known spelling discrepancies between sheets and database
+    aliases = {
+        "MUTAWATWA": "MUTAWATAWA",
+        "GURÛVE": "GURUVE",
+        "BAZELY BRIDGE": "BAZELEY BRIDGE",
+        "MT.HAMPDEN": "MT. HAMPDEN",
+        "MUSHUMBI/ MAHUHWE": "MUSHUMBI/MAHUHWE"
+    }
+    
     sync_results = {}
 
     for sheet_name, config in mappings.items():
@@ -221,11 +231,28 @@ def sync_all_assets():
         to_upsert = []
         for _, row in df.iterrows():
             station_name = str(row.get('Station', '')).strip().upper()
-            depot_id = depot_map.get(station_name)
+            
+            # Check for aliases
+            mapped_name = aliases.get(station_name, station_name)
+            depot_id = depot_map.get(mapped_name)
+            
+            if not depot_id:
+                # Fallback: check if the location field itself contains the station name
+                location_val = str(row.get('Location', '')).strip().upper()
+                for d_name, d_id in depot_map.items():
+                    # Fuzzy match: name contained in or containing the string
+                    if d_name == station_name or d_name in station_name or station_name in d_name:
+                         depot_id = d_id
+                         break
+                    if d_name in location_val or location_val in d_name:
+                        depot_id = d_id
+                        break
             
             payload = {}
             if depot_id:
                 payload['depot_id'] = depot_id
+            else:
+                print(f"Warning: Could not map station '{station_name}' to a depot ID for {sheet_name}")
             for sheet_col, db_col in field_map.items():
                 val = row.get(sheet_col)
                 if db_col in ['qty', 'plinth_area', 'rate', 'erc', 'depreciation_pct', 'drc', 'fair_value', 'mileage', 'grc', 'erul', 'land_size', 'location_x', 'location_y', 'accuracy']:
