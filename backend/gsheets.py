@@ -272,25 +272,7 @@ def sync_all_assets():
             to_upsert.append(payload)
         
         if to_upsert:
-            # Deduplicate using a composite key to preserve distinct assets sharing placeholder IDs
-            deduped = {}
-            for item in to_upsert:
-                # Composite key: ID + Description + Location + Photo
-                # This ensures two different buildings with ID "0" stay separate
-                # we strip and lower to avoid whitespace/case issues
-                comp_parts = [
-                    str(item.get('asset_number', '')).strip().lower(),
-                    str(item.get('asset_description', '')).strip().lower(),
-                    str(item.get('location', '')).strip().lower(),
-                    str(item.get('registration_number', '')).strip().lower(), # for vehicles
-                    str(item.get('photo_url', '')).strip()
-                ]
-                comp_key = "|".join(comp_parts)
-                
-                # Keep the last seen entry (latest timestamp/row)
-                deduped[comp_key] = item
-            
-            final_data = list(deduped.values())
+            final_data = to_upsert
             
             # Clear existing data to ensure "Ground Truth" sync
             supabase.table(table_name).delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()

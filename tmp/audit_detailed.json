@@ -1,0 +1,39 @@
+{
+  "sheet_rows": 1038,
+  "duplicates_count": 10,
+  "unique_count": 1028,
+  "supabase_exact_count": 1028,
+  "supabase_fetched_limit_2000": 1000,
+  "first_5_duplicates": [
+    {
+      "row_index": 196,
+      "asset_number": "200000000691",
+      "description": "Storeroom",
+      "original_row": 144
+    },
+    {
+      "row_index": 297,
+      "asset_number": "N/A",
+      "description": "HARD STANDS",
+      "original_row": 147
+    },
+    {
+      "row_index": 891,
+      "asset_number": "N/A",
+      "description": "Waiting Area",
+      "original_row": 870
+    },
+    {
+      "row_index": 892,
+      "asset_number": "N/A",
+      "description": "Waiting Area",
+      "original_row": 870
+    },
+    {
+      "row_index": 893,
+      "asset_number": "N/A",
+      "description": "Waiting Area",
+      "original_row": 870
+    }
+  ]
+}

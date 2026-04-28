@@ -46,15 +46,25 @@ async def get_inventory(table: str, depot_id: Optional[str] = Query(None)):
     from .sync import get_supabase_client
     supabase = get_supabase_client()
     try:
-        # Fetch data with depot details
-        query = supabase.table(table).select('*, depots(name)')
+        # Fetch data with depot details - handle pagination to bypass 1000 limit
+        all_data = []
+        chunk_size = 1000
+        offset = 0
         
-        # Apply filtering if depot_id is provided
-        if depot_id:
-            query = query.eq('depot_id', depot_id)
+        while True:
+            query = supabase.table(table).select('*, depots(name)').range(offset, offset + chunk_size - 1)
+            if depot_id:
+                query = query.eq('depot_id', depot_id)
             
-        result = query.execute()
-        return result.data
+            result = query.execute()
+            chunk_data = result.data or []
+            all_data.extend(chunk_data)
+            
+            if len(chunk_data) < chunk_size or len(all_data) >= 5000:
+                break
+            offset += chunk_size
+            
+        return all_data
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
